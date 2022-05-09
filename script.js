@@ -1,4 +1,4 @@
-const caps = false;
+let caps = false;
 let lang = localStorage.getItem('lang') || 'eng';
 const shift = false;
 
@@ -106,6 +106,7 @@ function showKeyboard(text = '') {
   elem = document.createElement('textarea');
   elem.id = 'text';
   elem.value = text;
+  elem.disabled=true;
   elem.autofocus = true;
   document.body.append(elem);
 
@@ -156,11 +157,9 @@ function deleteSymbol() {
 function keyPress(event) {
   document.getElementById('text').focus();
   let key;
-  let isMouse;
   if (event.code === undefined) { // это мышь
     if (event.currentTarget === event.target || event.target.className === 'row') return; // клик не по кнопке
     key = event.target.id;
-    isMouse = true;
     event.target.classList.remove('active');
   } else { // клавиатура
     document.getElementById(event.code).classList.remove('active');
@@ -174,13 +173,16 @@ function keyPress(event) {
       insertSymbol('    ');
       break;
     case 'CapsLock':
+      document.getElementById('CapsLock').classList.toggle('pressed');
+      caps = !caps;
+      showKeyboard(document.getElementById('text').value);
       break;
     case 'Enter':
       insertSymbol('\n');
       break;
     case 'ShiftLeft':
-      break;
     case 'ShiftRight':
+      
       break;
     case 'ControlLeft':
       lang = (lang === 'eng') ? 'rus' : 'eng';
@@ -194,7 +196,7 @@ function keyPress(event) {
     case 'AltRight':
       break;
     default:
-      if (isMouse) insertSymbol(KEYS[key][getlangID()]);
+      insertSymbol(KEYS[key][getlangID()]);
       break;
   }
 }
