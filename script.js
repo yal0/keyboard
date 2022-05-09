@@ -106,7 +106,7 @@ function showKeyboard(text = '') {
   elem = document.createElement('textarea');
   elem.id = 'text';
   elem.value = text;
-  elem.disabled=true;
+  elem.disabled = true;
   elem.autofocus = true;
   document.body.append(elem);
 
@@ -173,16 +173,17 @@ function keyPress(event) {
       insertSymbol('    ');
       break;
     case 'CapsLock':
-      document.getElementById('CapsLock').classList.toggle('pressed');
       caps = !caps;
       showKeyboard(document.getElementById('text').value);
+      if (caps) document.getElementById('CapsLock').classList.add('pressed');
+      else document.getElementById('CapsLock').classList.remove('pressed');
       break;
     case 'Enter':
       insertSymbol('\n');
       break;
     case 'ShiftLeft':
     case 'ShiftRight':
-      
+
       break;
     case 'ControlLeft':
       lang = (lang === 'eng') ? 'rus' : 'eng';
