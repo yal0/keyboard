@@ -1,5 +1,6 @@
-const CapsLock = false;
-const language = 'eng';
+const caps = false;
+let lang = localStorage.getItem('lang') || 'eng';
+const shift = false;
 
 const KEYS = {
   // английский, английский + caps, английский + shift, русский аналогично
@@ -82,20 +83,29 @@ const KEYS_WIDTH = [
   [1, 1, 19, 1, 1, 1, 1, 1],
 ];
 
-function showKeyboard(lang = '0') {
-  let elem;
+function getlangID() {
+  let i = (lang === 'eng') ? 0 : 3;
+  if (shift) i += 2;
+  else i += (caps) ? 1 : 0;
+  return i;
+}
 
+function showKeyboard(text = '') {
+  let elem;
+  const l = getlangID();
+  document.body.innerHTML = '';
   elem = document.createElement('h1');
   elem.innerHTML = 'Virtual Keyboard';
   document.body.append(elem);
 
   elem = document.createElement('p');
   elem.innerHTML = `Клавиатура создана в операционной системе <strong>Windows</strong><br>
-  Для переключения языка: <strong>ctrl</strong>`;
+  Для переключения языка: <strong>левый ctrl</strong>`;
   document.body.append(elem);
 
   elem = document.createElement('textarea');
   elem.id = 'text';
+  elem.value = text;
   elem.autofocus = true;
   document.body.append(elem);
 
@@ -113,10 +123,11 @@ function showKeyboard(lang = '0') {
       elem = document.createElement('div');
       elem.id = KEYBOARD[i][j];
       elem.style = `flex-grow:${KEYS_WIDTH[i][j]};`;
-      elem.innerHTML = KEYS[KEYBOARD[i][j]][lang];
+      elem.innerHTML = KEYS[KEYBOARD[i][j]][l];
       keyboard.children[i].append(elem);
     }
   }
+  document.getElementById('text').focus();
 }
 
 function insertSymbol(text) {
@@ -143,35 +154,48 @@ function deleteSymbol() {
 }
 
 function keyPress(event) {
+  document.getElementById('text').focus();
+  let key;
+  let isMouse;
   if (event.code === undefined) { // это мышь
     if (event.currentTarget === event.target || event.target.className === 'row') return; // клик не по кнопке
-    switch (event.target.innerHTML) {
-      case 'Backspace':
-        deleteSymbol();
-        break;
-      case 'Tab':
-        insertSymbol('    ');
-        break;
-      case 'Caps Lock':
-        break;
-      case 'Enter':
-        insertSymbol('\n');
-        break;
-      case 'Shift':
-        break;
-      case 'Ctrl':
-        break;
-      case 'Alt':
-        break;
-      case 'Win':
-        break;
-      default:
-        insertSymbol(event.target.innerHTML);
-        break;
-    }
+    key = event.target.id;
+    isMouse = true;
     event.target.classList.remove('active');
   } else { // клавиатура
     document.getElementById(event.code).classList.remove('active');
+    key = event.code;
+  }
+  switch (key) {
+    case 'Backspace':
+      deleteSymbol();
+      break;
+    case 'Tab':
+      insertSymbol('    ');
+      break;
+    case 'CapsLock':
+      break;
+    case 'Enter':
+      insertSymbol('\n');
+      break;
+    case 'ShiftLeft':
+      break;
+    case 'ShiftRight':
+      break;
+    case 'ControlLeft':
+      lang = (lang === 'eng') ? 'rus' : 'eng';
+      localStorage.lang = lang;
+      showKeyboard(document.getElementById('text').value);
+      break;
+    case 'ControlRight':
+      break;
+    case 'AltLeft':
+      break;
+    case 'AltRight':
+      break;
+    default:
+      if (isMouse) insertSymbol(KEYS[key][getlangID()]);
+      break;
   }
 }
 
@@ -183,10 +207,9 @@ function keyActive(event) {
 }
 
 showKeyboard();
-const keyboard = document.getElementById('keyboard');
 
-keyboard.addEventListener('mousedown', keyActive);
-keyboard.addEventListener('click', keyPress);
+document.body.addEventListener('mousedown', keyActive);
+document.body.addEventListener('click', keyPress);
 
 document.body.addEventListener('keydown', keyActive);
 document.body.addEventListener('keyup', keyPress);
