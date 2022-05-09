@@ -143,7 +143,7 @@ function deleteSymbol() {
 }
 
 function keyPress(event) {
-  if (event.code === 'undefended') { // это мышь
+  if (event.code === undefined) { // это мышь
     if (event.currentTarget === event.target || event.target.className === 'row') return; // клик не по кнопке
     switch (event.target.innerHTML) {
       case 'Backspace':
@@ -176,7 +176,7 @@ function keyPress(event) {
 }
 
 function keyActive(event) {
-  if (event.code === 'undefended') { // это мышь
+  if (event.code === undefined) { // это мышь
     if (event.currentTarget === event.target || event.target.className === 'row') return;
     event.target.classList.add('active');
   } else { document.getElementById(event.code).classList.add('active'); }
