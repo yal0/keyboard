@@ -1,6 +1,6 @@
 let caps = false;
 let lang = localStorage.getItem('lang') || 'eng';
-const shift = false;
+let shift = false;
 
 const KEYS = {
   // английский, английский + caps, английский + shift, русский аналогично
@@ -183,7 +183,9 @@ function keyPress(event) {
       break;
     case 'ShiftLeft':
     case 'ShiftRight':
-
+      shift = false;
+      showKeyboard(document.getElementById('text').value);
+      document.getElementById(key).classList.remove('pressed');
       break;
     case 'ControlLeft':
       lang = (lang === 'eng') ? 'rus' : 'eng';
@@ -203,16 +205,26 @@ function keyPress(event) {
 }
 
 function keyActive(event) {
+  let key;
   if (event.code === undefined) { // это мышь
     if (event.currentTarget === event.target || event.target.className === 'row') return;
     event.target.classList.add('active');
-  } else { document.getElementById(event.code).classList.add('active'); }
+    key = event.target.id;
+  } else {
+    document.getElementById(event.code).classList.add('active');
+    key = event.code;
+  }
+  if (key === 'ShiftLeft' || key === 'ShiftRight') {
+    shift = true;
+    showKeyboard(document.getElementById('text').value);
+    document.getElementById(key).classList.add('pressed');
+  }
 }
 
 showKeyboard();
 
 document.body.addEventListener('mousedown', keyActive);
-document.body.addEventListener('click', keyPress);
+document.body.addEventListener('mouseup', keyPress);
 
 document.body.addEventListener('keydown', keyActive);
 document.body.addEventListener('keyup', keyPress);
