@@ -47,10 +47,14 @@ body{
 
 @keyframes glowing {
     0% { background-color: whitesmoke;}
-    50% { background-color: lightseagreen }
+    50% { background-color: lightseagreen; }
     100% { background-color: whitesmoke; }
 }
 
 .active {
     animation: glowing 1300ms 1;
+}
+
+.pressed{
+    background-color: lightseagreen !important;
 }
