@@ -129,6 +129,7 @@ function showKeyboard(text = '') {
     }
   }
   document.getElementById('text').focus();
+  if(caps) document.getElementById('CapsLock').classList.add('pressed');
 }
 
 function insertSymbol(text) {
